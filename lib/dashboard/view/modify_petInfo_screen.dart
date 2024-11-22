@@ -20,7 +20,12 @@ class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
     final imagePicker = ImagePicker();
     return DefaultLayout(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        title: Text('반려견 정보 수정',style: TextStyle(
+          fontSize: 18,
+        ),),
+
+        centerTitle: true,
+        // automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0, // appbar가 앞으로 튀어나온거같은 효과를 준다.
         actions: [

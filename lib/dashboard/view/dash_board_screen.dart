@@ -1,10 +1,11 @@
+import 'package:dimple/common/const/colors.dart';
+import 'package:dimple/common/layout/default_layout.dart';
 import 'package:dimple/dashboard/component/dashboard_container.dart';
 import 'package:dimple/dashboard/component/dashboard_petInfo_container.dart';
 import 'package:dimple/dashboard/view/moved_distance_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -33,21 +34,55 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     const NeverScrollableScrollPhysics();
-    return SafeArea(
-      child: CustomScrollView(
-        controller: controller,
-        slivers: [
-          const SliverAppBar(),
-          petInfoSliver(_controller),
-          makeSpace(),
-          movedDistance(context),
-          makeSpace(),
-          pupuActivity(),
-        ],
+    return DefaultLayout(
+      floatingActionButton: _getMultiplePets(),
+      child: SafeArea(
+        child: CustomScrollView(
+          controller: controller,
+          slivers: [
+            const SliverAppBar(),
+            petInfoSliver(_controller),
+            makeSpace(),
+            movedDistance(context),
+            makeSpace(),
+            pupuActivity(),
+          ],
+        ),
       ),
     );
   }
 }
+
+Widget _getMultiplePets(){
+  return SpeedDial(
+    spaceBetweenChildren: 5,
+    visible: true,
+    animatedIcon: AnimatedIcons.menu_close,
+    animatedIconTheme: IconThemeData(size: 20),
+    backgroundColor: PRIMARY_COLOR  ,
+    curve: Curves.bounceIn,
+    children: [
+      SpeedDialChild(
+        backgroundColor: PRIMARY_COLOR,
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset('assets/img/banreou.png',fit: BoxFit.cover,),
+        ),
+        onTap: (){},
+      ),
+
+      SpeedDialChild(
+        backgroundColor: PRIMARY_COLOR,
+        child:  Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset('assets/img/runningDog.jpg',fit: BoxFit.cover,),
+        ),
+        onTap: (){},
+      ),
+    ],
+  );
+}
+
 
 SliverPadding petInfoSliver(FlipCardController controller) {
   return SliverPadding(
@@ -97,9 +132,15 @@ SliverPadding movedDistance(BuildContext context) {
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
         title: '이동거리',
+        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
+        // onTap: () {
+        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
+        // },
+        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (_) => MovedDistanceScreen()));
         },
+
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
@@ -138,11 +179,13 @@ SliverPadding movedDistance(BuildContext context) {
   );
 }
 
-SliverPadding makeSpace(){
-  return SliverPadding(padding: EdgeInsets.only(top: 16.0),);
+SliverPadding makeSpace() {
+  return SliverPadding(
+    padding: EdgeInsets.only(top: 16.0),
+  );
 }
 
-SliverPadding pupuActivity(){
+SliverPadding pupuActivity() {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
@@ -161,7 +204,7 @@ SliverPadding pupuActivity(){
                 width: 60,
                 height: 60,
               ),
-               Row(
+              Row(
                 children: [
                   Text(
                     '10',
@@ -170,14 +213,19 @@ SliverPadding pupuActivity(){
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(width: 8,),
+                  SizedBox(
+                    width: 8,
+                  ),
                   Column(
                     children: [
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.plus_one)),
+                        child: IconButton(
+                            onPressed: () {}, icon: Icon(Icons.plus_one)),
                       ),
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.exposure_minus_1)),
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.exposure_minus_1)),
                       )
                     ],
                   )
@@ -191,7 +239,7 @@ SliverPadding pupuActivity(){
   );
 }
 
-SliverPadding adminHealth(){
+SliverPadding adminHealth() {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
@@ -219,14 +267,19 @@ SliverPadding adminHealth(){
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(width: 8,),
+                  SizedBox(
+                    width: 8,
+                  ),
                   Column(
                     children: [
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.plus_one)),
+                        child: IconButton(
+                            onPressed: () {}, icon: Icon(Icons.plus_one)),
                       ),
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.exposure_minus_1)),
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.exposure_minus_1)),
                       )
                     ],
                   )

@@ -89,7 +89,7 @@ class DashboardPetInfoCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
-                          color: Colors.black, // 기본적으로 색상을 지정해야 합니다.
+                          color: Colors.black, // 기본적으로 색상을 지정
                         ),
                       ),
                       TextSpan(
