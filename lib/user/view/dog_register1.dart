@@ -49,8 +49,9 @@ class _DogRegister1State extends State<DogRegister1> {
                           width: 1.0,
                         ),
                         image: DecorationImage(
-                          image: AssetImage('assets/img/dog.png'),
+                          image: AssetImage('assets/img/banreou.png'),
                         ),
+
                       ),
                     ),
                     Positioned(
