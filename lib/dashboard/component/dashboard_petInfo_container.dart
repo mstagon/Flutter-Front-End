@@ -120,7 +120,7 @@ class DashboardPetInfoCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(width: 3,),
-                isFront ? FrontContainer(petNum: petNum!, age: age!) :BackContainer(weight: weight!, lastCheck: lastCheck.toString())
+                isFront ? FrontContainer(petNum: petNum!, age: age!) :BackContainer(weight: weight!, lastCheck: lastCheck.toString(),bloodType: 'A',)
               ],
             ),
           ],
@@ -174,9 +174,10 @@ class FrontContainer extends StatelessWidget {
 class BackContainer extends StatelessWidget {
   final double weight;
   final String lastCheck;
+  final String bloodType;
 
   const BackContainer(
-      {super.key, required this.weight, required this.lastCheck});
+      {super.key, required this.weight, required this.lastCheck, required this.bloodType});
 
   @override
   Widget build(BuildContext context) {
@@ -188,9 +189,17 @@ class BackContainer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text('혈액형 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
+            Text(bloodType, style: commonStyle),
+          ],
+        ),
+        const SizedBox(height: 2,),
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('몸무게', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
+            Text('몸무게 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
             Text('$weight kg', style: commonStyle),
           ],
         ),
@@ -198,7 +207,7 @@ class BackContainer extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('마지막 검진 일자', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
+            Text('마지막 검진 일자 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
             Text(lastCheck, style: commonStyle),
           ],
         ),

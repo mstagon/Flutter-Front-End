@@ -4,8 +4,15 @@ import 'package:dimple/dashboard/component/custom_bar_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class MovedDistanceScreen extends StatelessWidget {
-  const MovedDistanceScreen({super.key});
+class MovedDistanceDetailScreen extends StatefulWidget {
+  const MovedDistanceDetailScreen({super.key});
+
+  @override
+  State<MovedDistanceDetailScreen> createState() => _MovedDistanceDetailScreenState();
+}
+
+class _MovedDistanceDetailScreenState extends State<MovedDistanceDetailScreen> {
+  ChartPeriod _currentPeriod = ChartPeriod.day;
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +28,23 @@ class MovedDistanceScreen extends StatelessWidget {
           children: [
             ToggleSwitch(
               minHeight: 30,
-              initialLabelIndex: 0,
+              initialLabelIndex: _currentPeriod.index,
               totalSwitches: 4,
               activeFgColor: Colors.black,
               activeBgColor: const [PRIMARY_COLOR],
-              labels: const ['1일', '1주', '1개월', '1년'],
-              onToggle: (index) {},
+              labels: ['1일', '1주', '1개월', '1년'],
+              onToggle: (index) {
+                if (index != null) {
+                  setState(() {
+                    _currentPeriod = ChartPeriod.values[index];
+                  });
+                }
+              },
             ),
             const SizedBox(height: 10.0,),
-            CustomBarChart(),
+            CustomBarChart(
+              period: _currentPeriod,
+            ),
             const SizedBox(height: 20.0,),
             EvaluateAboutCircumstance(),
           ],

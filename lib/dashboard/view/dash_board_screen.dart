@@ -2,10 +2,13 @@ import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/common/layout/default_layout.dart';
 import 'package:dimple/dashboard/component/dashboard_container.dart';
 import 'package:dimple/dashboard/component/dashboard_petInfo_container.dart';
-import 'package:dimple/dashboard/view/moved_distance_screen.dart';
+import 'package:dimple/dashboard/view/admin_health_detail_screen.dart';
+import 'package:dimple/dashboard/view/moved_distance_detail_screen.dart';
+import 'package:dimple/dashboard/view/pupu_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -40,12 +43,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         child: CustomScrollView(
           controller: controller,
           slivers: [
-            const SliverAppBar(),
+            const SliverAppBar(backgroundColor: Colors.white,),
             petInfoSliver(_controller),
             makeSpace(),
             movedDistance(context),
             makeSpace(),
-            pupuActivity(),
+            pupuActivity(context),
+            makeSpace(),
+            adminHealth(context),
+            makeSpace(),
           ],
         ),
       ),
@@ -131,14 +137,14 @@ SliverPadding movedDistance(BuildContext context) {
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
-        title: '이동거리',
+        title: '이동 거리',
         // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
         // onTap: () {
         //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
         // },
         // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => MovedDistanceScreen()));
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => MovedDistanceDetailScreen()));
         },
 
         child: Padding(
@@ -185,13 +191,15 @@ SliverPadding makeSpace() {
   );
 }
 
-SliverPadding pupuActivity() {
+SliverPadding pupuActivity(BuildContext context) {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
-        title: '배변활동',
-        onTap: () {},
+        title: '배변 활동',
+        onTap: () {
+          pushScreenWithNavBar(context, PupuDetailScreen());
+        },
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
@@ -239,51 +247,33 @@ SliverPadding pupuActivity() {
   );
 }
 
-SliverPadding adminHealth() {
+SliverPadding adminHealth(BuildContext context) {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
         title: '건강 관리',
-        onTap: () {},
+        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
+        // onTap: () {
+        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
+        // },
+        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => AdminHealthDetailScreen()));
+        },
+
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Text('AI를 통한 건강 솔루션 요약'),
               Image.asset(
-                'assets/img/pupuActivity.png',
+                'assets/img/runningDog.jpg',
                 fit: BoxFit.cover,
                 width: 60,
                 height: 60,
-              ),
-              Row(
-                children: [
-                  Text(
-                    '10',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        child: IconButton(
-                            onPressed: () {}, icon: Icon(Icons.plus_one)),
-                      ),
-                      CircleAvatar(
-                        child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.exposure_minus_1)),
-                      )
-                    ],
-                  )
-                ],
               ),
             ],
           ),
