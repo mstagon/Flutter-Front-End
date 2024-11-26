@@ -16,7 +16,7 @@ class DashboardPetInfoCard extends StatelessWidget {
   final int? age;
 
   // 반려 견종
-  final String type;
+  final String breed;
 
   // 반려견 번호
   final int? petNum;
@@ -36,7 +36,7 @@ class DashboardPetInfoCard extends StatelessWidget {
     this.gender,
     required this.name,
     this.age,
-    required this.type,
+    required this.breed,
     this.petNum,
     this.weight,
     this.lastCheck, required this.isFront,
@@ -93,7 +93,7 @@ class DashboardPetInfoCard extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: ' $type',
+                        text: ' $breed',
                         style: TextStyle(
                           fontSize: 10,
                           color: Colors.grey, // 텍스트 색상 설정

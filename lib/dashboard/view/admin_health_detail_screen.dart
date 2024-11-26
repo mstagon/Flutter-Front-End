@@ -1,6 +1,5 @@
 import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/common/layout/default_layout.dart';
-import 'package:dimple/dashboard/component/custom_bar_chart.dart';
 import 'package:flutter/material.dart';
 
 class AdminHealthDetailScreen extends StatefulWidget {

@@ -5,17 +5,21 @@ class DashboardContainer extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final Widget child;
+  final double? width;
+  final bool? yIcon;
 
   const DashboardContainer(
       {super.key,
       required this.title,
       required this.onTap,
-      required this.child});
+      required this.child,
+      this.width,
+      this.yIcon = true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: width ?? MediaQuery.of(context).size.width,
       height: 150,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
@@ -27,33 +31,46 @@ class DashboardContainer extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0),
             decoration: BoxDecoration(
-              color: PRIMARY_COLOR, // 상단 노란색 배경
+              color: PRIMARY_COLOR, // 상단 대표 색상
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16.0),
                 topRight: Radius.circular(16.0),
               ),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: yIcon == false
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+                if (yIcon == false)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )
+                else ...[
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: onTap,
-                  icon: Icon(Icons.chevron_right),
-                ),
+                  IconButton(
+                    onPressed: onTap,
+                    icon: Icon(Icons.chevron_right),
+                  ),
+                ],
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: child,
-          ),
+          child,
         ],
       ),
     );
