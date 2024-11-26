@@ -1,10 +1,14 @@
+import 'package:dimple/common/const/colors.dart';
+import 'package:dimple/common/layout/default_layout.dart';
 import 'package:dimple/dashboard/component/dashboard_container.dart';
 import 'package:dimple/dashboard/component/dashboard_petInfo_container.dart';
-import 'package:dimple/dashboard/view/moved_distance_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dimple/dashboard/view/admin_health_detail_screen.dart';
+import 'package:dimple/dashboard/view/moved_distance_detail_screen.dart';
+import 'package:dimple/dashboard/view/pupu_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -33,20 +37,68 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     const NeverScrollableScrollPhysics();
-    return SafeArea(
-      child: CustomScrollView(
-        controller: controller,
-        slivers: [
-          const SliverAppBar(),
-          petInfoSliver(_controller),
-          makeSpace(),
-          movedDistance(context),
-          makeSpace(),
-          pupuActivity(),
+    return DefaultLayout(
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right:10.0),
+            child: IconButton(onPressed: (){}, icon: Icon(Icons.settings)),
+          ),
         ],
+      ),
+      floatingActionButton: _getMultiplePets(),
+      child: SafeArea(
+        child: CustomScrollView(
+          controller: controller,
+          slivers: [
+            petInfoSliver(_controller),
+            makeSpace(),
+            movedDistance(context),
+            makeSpace(),
+            rowPupuAndCalories(context),
+            makeSpace(),
+            adminHealth(context),
+            makeSpace(),
+          ],
+        ),
       ),
     );
   }
+}
+
+Widget _getMultiplePets() {
+  return SpeedDial(
+    spaceBetweenChildren: 5,
+    visible: true,
+    animatedIcon: AnimatedIcons.menu_close,
+    animatedIconTheme: IconThemeData(size: 20),
+    backgroundColor: PRIMARY_COLOR,
+    curve: Curves.bounceIn,
+    children: [
+      SpeedDialChild(
+        backgroundColor: PRIMARY_COLOR,
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset(
+            'assets/img/banreou.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+        onTap: () {},
+      ),
+      SpeedDialChild(
+        backgroundColor: PRIMARY_COLOR,
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Image.asset(
+            'assets/img/runningDog.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        onTap: () {},
+      ),
+    ],
+  );
 }
 
 SliverPadding petInfoSliver(FlipCardController controller) {
@@ -69,7 +121,7 @@ SliverPadding petInfoSliver(FlipCardController controller) {
               ),
               name: '마콩',
               age: 12,
-              type: '포메라니안',
+              breed: '포메라니안',
               petNum: 1234567891011,
               isFront: true,
             ),
@@ -79,7 +131,7 @@ SliverPadding petInfoSliver(FlipCardController controller) {
                 fit: BoxFit.cover,
               ),
               name: '마콩',
-              type: '포메라니안',
+              breed: '포메라니안',
               lastCheck: '2022-03-21',
               weight: 2.2,
               isFront: false,
@@ -96,10 +148,17 @@ SliverPadding movedDistance(BuildContext context) {
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
-        title: '이동거리',
+        title: '이동 거리',
+        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
+        // onTap: () {
+        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
+        // },
+        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => MovedDistanceScreen()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => MovedDistanceDetailScreen()));
         },
+
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
@@ -138,70 +197,118 @@ SliverPadding movedDistance(BuildContext context) {
   );
 }
 
-SliverPadding makeSpace(){
-  return SliverPadding(padding: EdgeInsets.only(top: 16.0),);
+SliverPadding makeSpace() {
+  return const SliverPadding(
+    padding: EdgeInsets.only(top: 16.0),
+  );
 }
 
-SliverPadding pupuActivity(){
+SliverPadding rowPupuAndCalories(BuildContext context) {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
-      child: DashboardContainer(
-        title: '배변활동',
-        onTap: () {},
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/pupuActivity.png',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ),
-               Row(
-                children: [
-                  Text(
-                    '10',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
+      child: Row(
+        children: [
+          Expanded(
+            child: DashboardContainer(
+              yIcon: false,
+              title: '배변 활동',
+              onTap: () {
+                pushScreenWithNavBar(context, PupuDetailScreen());
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/img/pupuActivity.png',
+                      fit: BoxFit.cover,
+                      width: 40,
+                      height: 40,
                     ),
-                  ),
-                  SizedBox(width: 8,),
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.plus_one)),
-                      ),
-                      CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.exposure_minus_1)),
-                      )
-                    ],
-                  )
-                ],
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 15,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.plus_one),
+                            iconSize: 15,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          '10',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        CircleAvatar(
+                          radius: 15,
+                          child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.exposure_minus_1,
+                                size: 15,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: DashboardContainer(
+              yIcon: false,
+              title: '이번주 설정 칼로리',
+              onTap: () {
+                pushScreenWithNavBar(context, PupuDetailScreen());
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Center(
+                  child: Text("0 / 210"),
+                )
+                ),
+              ),
+            ),
+        ],
       ),
     ),
   );
 }
 
-SliverPadding adminHealth(){
+SliverPadding pupuActivity(BuildContext context) {
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
       child: DashboardContainer(
-        title: '건강 관리',
-        onTap: () {},
+        title: '배변 활동',
+        onTap: () {
+          pushScreenWithNavBar(context, PupuDetailScreen());
+        },
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
@@ -219,18 +326,60 @@ SliverPadding adminHealth(){
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(width: 8,),
+                  SizedBox(
+                    width: 8,
+                  ),
                   Column(
                     children: [
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.plus_one)),
+                        child: IconButton(
+                            onPressed: () {}, icon: Icon(Icons.plus_one)),
                       ),
                       CircleAvatar(
-                        child: IconButton(onPressed: (){}, icon: Icon(Icons.exposure_minus_1)),
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.exposure_minus_1)),
                       )
                     ],
                   )
                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+SliverPadding adminHealth(BuildContext context) {
+  return SliverPadding(
+    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+    sliver: SliverToBoxAdapter(
+      child: DashboardContainer(
+        title: '건강 관리',
+        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
+        // onTap: () {
+        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
+        // },
+        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
+        onTap: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => AdminHealthDetailScreen()));
+        },
+
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('AI를 통한 건강 솔루션 요약'),
+              Image.asset(
+                'assets/img/runningDog.jpg',
+                fit: BoxFit.cover,
+                width: 60,
+                height: 60,
               ),
             ],
           ),
