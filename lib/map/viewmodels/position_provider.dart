@@ -1,28 +1,72 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:dimple/map/viewmodels/polyline_provider.dart';
+import 'package:dimple/map/viewmodels/walk_record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../services/position_service.dart';
+import '../repositories/walk_record_repository.dart';
 
 
-// 위치 추적 상태를 관리하는 StateNotifier
 class PositionController extends StateNotifier<Stream<Position>?> {
-  PositionController() : super(null);
-  final _positionService = PositionService();
+  final WalkRecordRepository _repository;
+  final WalkRecordNotifier _walkRecordNotifier;
+  final PolylineProvider _polylineProvider;
+  StreamSubscription<Position>? _subscription;
+
+  PositionController(
+    this._repository, 
+    this._walkRecordNotifier,
+    this._polylineProvider,
+  ) : super(null);
 
   void startListening() {
-    state = _positionService.positionStream();
+    final positionStream = PositionService().positionStream();
+    _subscription = positionStream.listen((position) async {
+      final currentRecord = _walkRecordNotifier.state;
+      if (currentRecord != null) {
+        final newPoint = LatLng(position.latitude, position.longitude);
+        
+        // 경로에 새 위치 추가
+        _polylineProvider.addPoint(newPoint);
+        
+        // 거리 업데이트
+        _walkRecordNotifier.updateDistance(_polylineProvider.state);
+        
+        // 백엔드에 현재 위치 전송
+        await _repository.updateCurrentLocation(
+          currentRecord.id,
+          newPoint,
+        );
+      }
+    });
+    state = positionStream;
   }
 
   void stopListening() {
+    _subscription?.cancel();
+    _subscription = null;
     state = null;
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 }
 
-// 위치 추적 컨트롤러 provider
-final positionControllerProvider = StateNotifierProvider<PositionController, Stream<Position>?>(
-  (ref) => PositionController(),
-);
 
-// 위치 스트림 provider
+final positionControllerProvider = StateNotifierProvider<PositionController, Stream<Position>?>((ref) {
+  final repository = ref.watch(walkRecordRepositoryProvider);
+  final walkRecordNotifier = ref.watch(walkRecordProvider.notifier);
+  final polylineProvider = ref.watch(polylineCoordinatesProvider.notifier);
+  return PositionController(repository, walkRecordNotifier, polylineProvider);
+});
+
+
 final positionProvider = StreamProvider<Position>((ref) {
   final stream = ref.watch(positionControllerProvider);
   if (stream == null) {

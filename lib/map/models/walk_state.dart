@@ -1,1 +1,1 @@
-enum WalkState { before, riding, paused }
+enum WalkState { before, riding, paused, finished }

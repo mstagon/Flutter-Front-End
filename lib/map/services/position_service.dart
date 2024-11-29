@@ -4,10 +4,10 @@ import 'package:flutter/foundation.dart';
 class PositionService {
   static final PositionService _instance = PositionService._internal();
 
- late final LocationSettings _locationSettings;
+  late final LocationSettings _locationSettings;
 
   static const int DISTANCE = 0;
-  static const int DURATION_MILLISECONDS = 100;
+  static const int DURATION_MILLISECONDS = 10;
 
   factory PositionService() => _instance;
 
