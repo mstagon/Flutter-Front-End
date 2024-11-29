@@ -1,7 +1,7 @@
 import 'package:dimple/chatbot/view/chatbot_screen.dart';
 import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/dashboard/view/dash_board_screen.dart';
-import 'package:dimple/map/view/map_screen.dart';
+import 'package:dimple/map/view/map_page.dart';
 import 'package:dimple/social/view/social_screen.dart';
 import 'package:dimple/user/view/mypage_screen.dart';
 import 'package:flutter/material.dart';
