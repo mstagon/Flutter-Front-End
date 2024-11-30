@@ -1,10 +1,14 @@
 import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/common/layout/default_layout.dart';
+import 'package:dimple/common/utils/data_utils.dart';
+import 'package:dimple/dashboard/add_newpet_screen.dart';
 import 'package:dimple/dashboard/component/dashboard_container.dart';
 import 'package:dimple/dashboard/component/dashboard_petInfo_container.dart';
-import 'package:dimple/dashboard/view/admin_health_detail_screen.dart';
+import 'package:dimple/dashboard/view/food_range_screen.dart';
 import 'package:dimple/dashboard/view/moved_distance_detail_screen.dart';
 import 'package:dimple/dashboard/view/pupu_detail_screen.dart';
+import 'package:dimple/solution/view/solution_calendar_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -39,25 +43,85 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     const NeverScrollableScrollPhysics();
     return DefaultLayout(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right:10.0),
-            child: IconButton(onPressed: (){}, icon: Icon(Icons.settings)),
+            padding: const EdgeInsets.only(right: 16.0, bottom: 5.0),
+            child: IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20.0),
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage:
+                                AssetImage('assets/img/runningDog.jpg'),
+                          ),
+                          SizedBox(height: 12.0),
+                          Text(
+                            '사용자 이름',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 16.0),
+                          Expanded(
+                              child: ListView(
+                            children: [
+                              ListTile(
+                                title: Text('이용약관'),
+                                onTap: () {},
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              ListTile(
+                                title: Text('회원탈퇴'),
+                                onTap: () {},
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              ListTile(
+                                title: Text('로그아웃'),
+                                onTap: () {},
+                              ),
+                            ],
+                          )),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: Image.asset('assets/img/banreou.png'),
+            ),
           ),
         ],
       ),
-      floatingActionButton: _getMultiplePets(),
+      floatingActionButton: _getMultiplePets(context),
       child: SafeArea(
         child: CustomScrollView(
           controller: controller,
           slivers: [
             petInfoSliver(_controller),
             makeSpace(),
+            weekReport(context),
+            makeSpace(),
             movedDistance(context),
             makeSpace(),
             rowPupuAndCalories(context),
             makeSpace(),
-            adminHealth(context),
+            RowAddMemoAndAllResponse(context),
             makeSpace(),
           ],
         ),
@@ -66,15 +130,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   }
 }
 
-Widget _getMultiplePets() {
+Widget _getMultiplePets(context) {
   return SpeedDial(
-    spaceBetweenChildren: 5,
+    spaceBetweenChildren: 8,
     visible: true,
     animatedIcon: AnimatedIcons.menu_close,
     animatedIconTheme: IconThemeData(size: 20),
     backgroundColor: PRIMARY_COLOR,
-    curve: Curves.bounceIn,
+    useRotationAnimation: true,
+    curve: Curves.elasticInOut,
     children: [
+      // 나중에 스피드 다이얼은 리스트 뷰로 찍을 예정
       SpeedDialChild(
         backgroundColor: PRIMARY_COLOR,
         child: Padding(
@@ -96,6 +162,13 @@ Widget _getMultiplePets() {
           ),
         ),
         onTap: () {},
+      ),
+      SpeedDialChild(
+        backgroundColor: PRIMARY_COLOR,
+        child: Icon(Icons.add),
+        onTap: () {
+          pushScreenWithNavBar(context, AddNewPetScreen());
+        },
       ),
     ],
   );
@@ -132,12 +205,49 @@ SliverPadding petInfoSliver(FlipCardController controller) {
               ),
               name: '마콩',
               breed: '포메라니안',
+              lastHeartInjection: '2023-03-12',
               lastCheck: '2022-03-21',
-              weight: 2.2,
               isFront: false,
             ),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+SliverPadding weekReport(BuildContext context) {
+  final TextStyle tstyle = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
+  );
+  return SliverPadding(
+    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+    sliver: SliverToBoxAdapter(
+      child: DashboardContainer(
+        yIcon: false,
+        title: '이번주 주간 리포트',
+        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
+        // onTap: () {
+        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
+        // },
+        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('1.	반려견의 체중, 운동량, 식사량 등을 분석한 개인화된 건강 관리 권고', style: tstyle),
+              SizedBox(
+                height: 10,
+              ),
+              Text('2.	반려견의 체중, 운동량, 식사량 등을 분석한 개인화된 건강 관리 권고', style: tstyle),
+            ],
+          ),
+        ),
       ),
     ),
   );
@@ -159,38 +269,38 @@ SliverPadding movedDistance(BuildContext context) {
               MaterialPageRoute(builder: (_) => MovedDistanceDetailScreen()));
         },
 
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/runningDog.jpg',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ),
-              const Column(
-                children: [
-                  Text(
-                    '80KM',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/img/runningDog.jpg',
+              fit: BoxFit.cover,
+              width: 60,
+              height: 60,
+            ),
+            const Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '80KM',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
                   ),
-                  Text(
-                    '123kcal',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
+                ),
+                Text(
+                  '123kcal',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     ),
@@ -204,6 +314,8 @@ SliverPadding makeSpace() {
 }
 
 SliverPadding rowPupuAndCalories(BuildContext context) {
+  int _currentNumber = 0;
+
   return SliverPadding(
     padding: const EdgeInsets.symmetric(horizontal: 30.0),
     sliver: SliverToBoxAdapter(
@@ -211,63 +323,72 @@ SliverPadding rowPupuAndCalories(BuildContext context) {
         children: [
           Expanded(
             child: DashboardContainer(
-              yIcon: false,
               title: '배변 활동',
               onTap: () {
                 pushScreenWithNavBar(context, PupuDetailScreen());
               },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/img/pupuActivity.png',
-                      fit: BoxFit.cover,
-                      width: 40,
-                      height: 40,
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 15,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.plus_one),
-                            iconSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          '10',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        CircleAvatar(
-                          radius: 15,
-                          child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.exposure_minus_1,
-                                size: 15,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ],
+              child: GestureDetector(
+                onTap: () {
+                  // 숫자 Picker 호출
+                  DataUtils.showCenterNumberPicker(
+                    context,
+                    _currentNumber,
+                    (int value) {
+                      _currentNumber = value;
+                    },
+                  );
+                },
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/img/pupuActivity.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            child: DashboardContainer(
+              yIcon: false,
+              title: '이번주 설정 칼로리',
+              onTap: () {},
+              child: Center(
+                child: Text("0 / 210 Kcal", textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.0),),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+SliverPadding RowAddMemoAndAllResponse(BuildContext context) {
+  return SliverPadding(
+    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+    sliver: SliverToBoxAdapter(
+      child: Row(
+        children: [
+          Expanded(
+            child: DashboardContainer(
+              title: '급여량',
+              onTap: () {
+                pushScreenWithNavBar(context, FoodRangeScreen());
+              },
+              child: GestureDetector(
+                onTap: () {
+                  DataUtils.showFoodPopUp(context);
+                },
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/img/dog-food.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain, // 이미지 전체가 보이도록 함
+                  ),
                 ),
               ),
             ),
@@ -277,113 +398,23 @@ SliverPadding rowPupuAndCalories(BuildContext context) {
           ),
           Expanded(
             child: DashboardContainer(
-              yIcon: false,
-              title: '이번주 설정 칼로리',
+              title: '생리 추적',
               onTap: () {
-                pushScreenWithNavBar(context, PupuDetailScreen());
+                pushScreenWithNavBar(context, SolutionCalendarScreen());
               },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Center(
-                  child: Text("0 / 210"),
-                )
+              child: Center(
+                child: Text(
+                  "D-10",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
+          ),
         ],
-      ),
-    ),
-  );
-}
-
-SliverPadding pupuActivity(BuildContext context) {
-  return SliverPadding(
-    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-    sliver: SliverToBoxAdapter(
-      child: DashboardContainer(
-        title: '배변 활동',
-        onTap: () {
-          pushScreenWithNavBar(context, PupuDetailScreen());
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/pupuActivity.png',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ),
-              Row(
-                children: [
-                  Text(
-                    '10',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        child: IconButton(
-                            onPressed: () {}, icon: Icon(Icons.plus_one)),
-                      ),
-                      CircleAvatar(
-                        child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.exposure_minus_1)),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-SliverPadding adminHealth(BuildContext context) {
-  return SliverPadding(
-    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-    sliver: SliverToBoxAdapter(
-      child: DashboardContainer(
-        title: '건강 관리',
-        // // 이렇게하면 바텀네비게이션바 없애면서 페이지 이동 --> 나중에 라우터 적용하면 달라짐
-        // onTap: () {
-        //  pushScreen(context, screen: MovedDistanceScreen(),withNavBar: false);
-        // },
-        // 이렇게하면 바텀네비게이션바 유지하면서 페이지이동 --> 나중에 라우터 적용하면 달라짐
-        onTap: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => AdminHealthDetailScreen()));
-        },
-
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('AI를 통한 건강 솔루션 요약'),
-              Image.asset(
-                'assets/img/runningDog.jpg',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ),
-            ],
-          ),
-        ),
       ),
     ),
   );

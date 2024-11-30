@@ -56,11 +56,10 @@ class CustomBarChartState extends State<CustomBarChart> {
       case ChartPeriod.day:
       // 6시간 간격으로만 레이블 표시
         if (index % 6 == 0) {
-          final hour = index ~/ 2;
-          if (hour == 0) text = '오전 12시';
-          else if (hour == 6) text = '6시';
-          else if (hour == 12) text = '오후 12시';
-          else if (hour == 18) text = '6시';
+          if (index == 0) text = '오전 12시';
+          else if (index == 6) text = '6시';
+          else if (index == 12) text = '오후 12시';
+          else if (index == 18) text = '6시';
         }
       case ChartPeriod.week:
       // 모든 요일 표시
@@ -83,7 +82,7 @@ class CustomBarChartState extends State<CustomBarChart> {
     );
   }
 
-  Widget leftTitles(double value, TitleMeta meta) {
+  Widget rightTitles(double value, TitleMeta meta) {
     if (value == meta.max) {
       return Container();
     }
@@ -138,75 +137,80 @@ class CustomBarChartState extends State<CustomBarChart> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.5,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.center,
-                barTouchData: BarTouchData(enabled: false),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 28,
-                      getTitlesWidget: bottomTitles,
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: leftTitles,
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawHorizontalLine: true,
-                  horizontalInterval: 1000000000,
-                  getDrawingHorizontalLine: (value) => FlLine(
-                    color: Colors.grey.withOpacity(0.2),
-                    strokeWidth: 1,
-                  ),
-                  // 1000000000
-                  drawVerticalLine: true,
-                  verticalInterval: 1000000000,
-                  getDrawingVerticalLine: (value) => FlLine(
-                    color: Colors.grey.withOpacity(0.2),
-                    strokeWidth: 1,
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                groupsSpace: getBarsSpace(),
-                barGroups: chartData.asMap().entries.map((entry) {
-                  return BarChartGroupData(
-                    x: entry.key,
-                    barRods: [
-                      BarChartRodData(
-                        toY: entry.value.value,
-                        rodStackItems: [
-                          BarChartRodStackItem(0, entry.value.value, PRIMARY_COLOR),
-                        ],
-                        borderRadius: BorderRadius.zero,
-                        width: getBarWidth(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AspectRatio(
+        aspectRatio: 1.5,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.center,
+                  barTouchData: BarTouchData(enabled: false),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 28,
+                        getTitlesWidget: bottomTitles,
                       ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            );
-          },
+                    ),
+                    leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: false,
+                      ),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                          showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: rightTitles,
+                      ),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    drawHorizontalLine: true,
+                    horizontalInterval: 1000000000,
+                    getDrawingHorizontalLine: (value) => FlLine(
+                      color: Colors.grey.withOpacity(0.2),
+                      strokeWidth: 1,
+                    ),
+                    // 1000000000
+                    drawVerticalLine: true,
+                    verticalInterval: 1000000000,
+                    getDrawingVerticalLine: (value) => FlLine(
+                      color: Colors.grey.withOpacity(0.2),
+                      strokeWidth: 1,
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  groupsSpace: getBarsSpace(),
+                  barGroups: chartData.asMap().entries.map((entry) {
+                    return BarChartGroupData(
+                      x: entry.key,
+                      barRods: [
+                        BarChartRodData(
+                          toY: entry.value.value,
+                          rodStackItems: [
+                            BarChartRodStackItem(0, entry.value.value, PRIMARY_COLOR),
+                          ],
+                          borderRadius: BorderRadius.zero,
+                          width: getBarWidth(),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/dashboard/view/dash_board_screen.dart';
 import 'package:dimple/map/view/map_screen.dart';
 import 'package:dimple/social/view/social_screen.dart';
+import 'package:dimple/solution/view/solution_calendar_screen.dart';
 import 'package:dimple/user/view/mypage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
@@ -23,16 +24,15 @@ class RootTab extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: MapScreen(),
+          screen: SolutionCalendarScreen(),
           item: ItemConfig(
             activeForegroundColor: Colors.black,
-            icon: Icon(Icons.directions_walk),
-            title: "산책",
+            icon: Icon(Icons.calendar_month),
+            title: "솔루션",
           ),
         ),
         // pushScreen(context, screen: ChatbotScreen(),withNavBar: false),
-        PersistentTabConfig(
-          screen: ChatbotScreen(),
+        PersistentTabConfig.noScreen(
           item: ItemConfig(
             activeForegroundColor: PRIMARY_COLOR,
             icon: Padding(
@@ -41,6 +41,17 @@ class RootTab extends StatelessWidget {
             ),
             title: "챗봇",
           ),
+          onPressed: (BuildContext context){
+            pushScreen(context, screen: ChatbotScreen(),withNavBar: false);
+          },
+        ),
+        PersistentTabConfig(
+          screen: MapScreen(),
+          item: ItemConfig(
+            activeForegroundColor: Colors.black,
+            icon: Icon(Icons.directions_walk),
+            title: "산책",
+          ),
         ),
         PersistentTabConfig(
           screen: SocialScreen(),
@@ -48,14 +59,6 @@ class RootTab extends StatelessWidget {
             activeForegroundColor: Colors.black,
             icon: Icon(Icons.social_distance),
             title: "소셜",
-          ),
-        ),
-        PersistentTabConfig(
-          screen: MypageScreen(),
-          item: ItemConfig(
-            activeForegroundColor: Colors.black,
-            icon: Icon(Icons.person),
-            title: "마이페이지",
           ),
         ),
       ],

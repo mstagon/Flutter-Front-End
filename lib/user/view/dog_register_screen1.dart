@@ -1,26 +1,25 @@
 import 'dart:io';
 import 'package:dimple/common/component/custom_dropdown_form_field.dart';
 import 'package:dimple/common/component/custom_text_formfield.dart';
+import 'package:dimple/common/component/submit_button.dart';
+import 'package:dimple/user/view/dog_register_screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/common/layout/default_layout.dart';
 
-class ModifyPetInfoScreen extends StatefulWidget {
-  const ModifyPetInfoScreen({super.key});
+class DogRegisterScreen1 extends StatefulWidget {
+  const DogRegisterScreen1({super.key});
 
   @override
-  State<ModifyPetInfoScreen> createState() => _ModifyPetInfoScreenState();
+  State<DogRegisterScreen1> createState() => _DogRegisterScreen1State();
 }
 
-class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
+class _DogRegisterScreen1State extends State<DogRegisterScreen1> {
   XFile? selectedImage;
   String realDogType = '';
   String neutral1 = '';
   String gender = '';
-  String blood = '';
 
-  final List<String> bloodTypes = ['IDA1', 'IDA2', 'IDA3', 'IDA4'];
   final List<String> genderTypes = ['암컷', '수컷'];
   final List<String> neutralTypes = ['O', 'X'];
   final List<String> dogTypes = [
@@ -30,44 +29,35 @@ class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text('반려견 정보 수정'),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // 정보 수정하는 API 연동 부분
-              },
-              child: const Text('수정',),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                minimumSize: Size(35, 35),
-                backgroundColor: PRIMARY_COLOR,
-                padding: EdgeInsets.symmetric(horizontal: 16.0)
-              ),
-            ),
-          ),
-        ],
-      ),
-      child: ListView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: Stack(
         children: [
-              const SizedBox(height: 10.0),
+          ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            children: [
+              const SizedBox(height: 30.0),
               _buildImagePicker(),
               const SizedBox(height: 10.0),
               _buildBasicInfoRow(),
-              const SizedBox(height: 10.0),
-              _buildMeasurementRow(),
               const SizedBox(height: 10.0),
               _buildAdditionalInfoRow(),
               const SizedBox(height: 10.0),
             ],
           ),
+          Positioned(
+            bottom: 35.0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SubmitButton(
+                text: '다음',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => DogRegisterScreen2()));
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -113,21 +103,14 @@ class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
   }
 
   Widget _buildBasicInfoRow() {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        CustomTextFormField(labelText: '이름'),
-        CustomTextFormField(labelText: '나이', isNumber: true),
-      ],
-    );
-  }
-
-  Widget _buildMeasurementRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        CustomTextFormField(labelText: '몸무게(kg)'),
-        CustomTextFormField(labelText: '신장(cm)', isNumber: true),
+        CustomTextFormField(labelText: '',width: 310,hintText: '이름',height: 65,),
+        const SizedBox(height: 10.0,),
+        CustomTextFormField(labelText: '', isNumber: true,width: 310,hintText: '나이',height: 65,),
+        const SizedBox(height: 10.0,),
+        CustomTextFormField(labelText: '',width: 310,hintText: '몸무게',height: 65,),
       ],
     );
   }
@@ -139,25 +122,7 @@ class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomDropdownFormField(
-              title: '혈액형',
-              selectedValue: blood,
-              options: bloodTypes,
-              onChanged: (String value) {
-                setState(() {
-                  blood = value;
-                });
-              },
-              hintText: '혈액형',
-            ),
-            CustomTextFormField(labelText: '다리길이(cm)'),
-          ],
-        ),
-        const SizedBox(height: 14),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            CustomDropdownFormField(
-              title: '성별',
+              title: '',
               selectedValue: gender,
               options: genderTypes,
               onChanged: (String value) {
@@ -166,39 +131,37 @@ class _ModifyPetInfoScreenState extends State<ModifyPetInfoScreen> {
                 });
               },
               hintText: '성별',
+              height: 55,
             ),
             CustomDropdownFormField(
-              title: '중성화',
+              title: '',
               selectedValue: neutral1,
               options: neutralTypes,
-              onChanged: (String value) {
+              onChanged: (value) {
                 setState(() {
                   neutral1 = value;
                 });
               },
               hintText: '중성화',
+              height: 55,
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10.0,),
         CustomDropdownFormField(
-          title: '품종',
+          title: '',
           selectedValue: realDogType,
           options: dogTypes,
           width: 310,
-          onChanged: (String value) {
+          onChanged: (value) {
             setState(() {
               realDogType = value;
             });
           },
           hintText: '품종',
+          height: 55,
         ),
-        const SizedBox(height: 14),
-        const CustomTextFormField(
-          labelText: '등록번호',
-          isNumber: true,
-          width: 310,
-        ),
+        const SizedBox(height: 65.0,),
       ],
     );
   }

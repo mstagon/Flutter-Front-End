@@ -21,8 +21,8 @@ class DashboardPetInfoCard extends StatelessWidget {
   // 반려견 번호
   final int? petNum;
 
-  // 반려견 몸무게
-  final double? weight;
+  // 반려견 사상충 마지막 접종일
+  final String? lastHeartInjection;
 
   // 반려견 마지만 검진 일자
   final String? lastCheck;
@@ -38,7 +38,7 @@ class DashboardPetInfoCard extends StatelessWidget {
     this.age,
     required this.breed,
     this.petNum,
-    this.weight,
+    this.lastHeartInjection,
     this.lastCheck, required this.isFront,
   });
 
@@ -120,7 +120,7 @@ class DashboardPetInfoCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(width: 3,),
-                isFront ? FrontContainer(petNum: petNum!, age: age!) :BackContainer(weight: weight!, lastCheck: lastCheck.toString(),bloodType: 'A',)
+                isFront ? FrontContainer(petNum: petNum!, age: age!) :BackContainer(lastHeartInjection: lastHeartInjection.toString(), lastCheck: lastCheck.toString(),)
               ],
             ),
           ],
@@ -172,12 +172,11 @@ class FrontContainer extends StatelessWidget {
 
 
 class BackContainer extends StatelessWidget {
-  final double weight;
+  final String lastHeartInjection;
   final String lastCheck;
-  final String bloodType;
 
   const BackContainer(
-      {super.key, required this.weight, required this.lastCheck, required this.bloodType});
+      {super.key, required this.lastHeartInjection, required this.lastCheck});
 
   @override
   Widget build(BuildContext context) {
@@ -191,24 +190,16 @@ class BackContainer extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('혈액형 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
-            Text(bloodType, style: commonStyle),
+            Text('최근 검진 일자 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
+            Text(lastCheck, style: commonStyle),
           ],
         ),
-        const SizedBox(height: 2,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('몸무게 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
-            Text('$weight kg', style: commonStyle),
-          ],
-        ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 8.0,),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('마지막 검진 일자 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
-            Text(lastCheck, style: commonStyle),
+            Text('최근 심장 사상충 접종일 ', style: commonStyle.copyWith(fontWeight: FontWeight.w700)),
+            Text('$lastHeartInjection', style: commonStyle),
           ],
         ),
       ],
