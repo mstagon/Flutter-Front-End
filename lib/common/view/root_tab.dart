@@ -1,11 +1,14 @@
 import 'package:dimple/chatbot/view/chatbot_screen.dart';
 import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/dashboard/view/dash_board_screen.dart';
-import 'package:dimple/map/view/map_screen.dart';
+import 'package:dimple/map/view/map_page.dart';
 import 'package:dimple/social/view/social_screen.dart';
 import 'package:dimple/solution/view/solution_calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+
+import '../../calendar/view/calendar_screen.dart';
+
 
 class RootTab extends StatelessWidget {
   const RootTab({super.key});
@@ -23,7 +26,8 @@ class RootTab extends StatelessWidget {
           ),
         ),
         PersistentTabConfig(
-          screen: SolutionCalendarScreen(),
+          screen: CalendarScreen(),
+
           item: ItemConfig(
             activeForegroundColor: Colors.black,
             icon: Icon(Icons.calendar_month),
@@ -44,13 +48,15 @@ class RootTab extends StatelessWidget {
             pushScreen(context, screen: ChatbotScreen(),withNavBar: false);
           },
         ),
-        PersistentTabConfig(
-          screen: MapScreen(),
+        PersistentTabConfig.noScreen(
           item: ItemConfig(
             activeForegroundColor: Colors.black,
             icon: Icon(Icons.directions_walk),
             title: "산책",
           ),
+          onPressed: (BuildContext context){
+            pushScreen(context, screen: MapScreen(),withNavBar: false);
+          },
         ),
         PersistentTabConfig(
           screen: SocialScreen(),
