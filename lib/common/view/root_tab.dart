@@ -3,7 +3,7 @@ import 'package:dimple/common/const/colors.dart';
 import 'package:dimple/dashboard/view/dash_board_screen.dart';
 import 'package:dimple/map/view/map_page.dart';
 import 'package:dimple/social/view/social_screen.dart';
-import 'package:dimple/user/view/mypage_screen.dart';
+import 'package:dimple/solution/view/solution_calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
@@ -27,6 +27,7 @@ class RootTab extends StatelessWidget {
         ),
         PersistentTabConfig(
           screen: CalendarScreen(),
+
           item: ItemConfig(
             activeForegroundColor: Colors.black,
             icon: Icon(Icons.calendar_month),

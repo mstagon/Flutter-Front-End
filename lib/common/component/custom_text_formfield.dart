@@ -2,19 +2,23 @@ import 'package:dimple/common/const/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField<T> extends StatelessWidget {
-  final bool autofocus;
   final ValueChanged<T>? onChanged;
   final String labelText;
   final bool isNumber;
-  final double size;
+  final double? width;
+  final double? height;
+  final bool autofocus;
+  final String? hintText;
 
   const CustomTextFormField({
-    required this.onChanged,
-    this.autofocus = false,
     super.key,
+    this.onChanged,
     required this.labelText,
     this.isNumber = false,
-    this.size = 120,
+    this.width = 135,
+    this.height = 50,
+    this.autofocus = false,
+    this.hintText,
   });
 
   @override
@@ -28,8 +32,10 @@ class CustomTextFormField<T> extends StatelessWidget {
     );
 
     return Column(
+      // mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if(labelText.isNotEmpty)
         Text(
           labelText,
           style: TextStyle(
@@ -37,34 +43,41 @@ class CustomTextFormField<T> extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(
-          height: 8.0,
-        ),
+        const SizedBox(height: 8.0),
         SizedBox(
-          width: size,
-          height: 50,
+          width: width,
+          height: height,
           child: TextFormField(
             keyboardType: isNumber ? TextInputType.number : TextInputType.text,
             cursorColor: PRIMARY_COLOR,
             autofocus: autofocus,
             onChanged: (value) {
-              if (isNumber) {
-                onChanged?.call(double.tryParse(value) as T);
-              } else {
-                onChanged?.call(value as T);
+              if (onChanged != null) {
+                if (isNumber) {
+                  final parsedValue = double.tryParse(value);
+                  if (parsedValue != null) {
+                    onChanged!(parsedValue as T);
+                  }
+                } else {
+                  onChanged!(value as T);
+                }
               }
             },
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(20),
+              contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
+              hintText: hintText,
+              hintStyle: TextStyle(
+                color: Colors.grey,
+              ),
               fillColor: Color(0xFFFBFBFB),
-              // true는 배경색 있음 false는 없음
               filled: false,
               border: baseBorder,
               enabledBorder: baseBorder,
               focusedBorder: baseBorder.copyWith(
-                  borderSide: baseBorder.borderSide.copyWith(
-                color: PRIMARY_COLOR,
-              )),
+                borderSide: baseBorder.borderSide.copyWith(
+                  color: PRIMARY_COLOR,
+                ),
+              ),
             ),
           ),
         ),

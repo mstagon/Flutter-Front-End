@@ -47,6 +47,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<key>NSCameraUsageDescription</key>
+       <string>Used to demonstrate image picker plugin</string>
+       <key>NSMicrophoneUsageDescription</key>
+       <string>Used to capture audio for image picker plugin</string>
+       <key>NSPhotoLibraryUsageDescription</key>
+       <string>Used to demonstrate image picker plugin</string>
+       <key>NSCameraUsageDescription</key>
+       <string>카메라 접근 권한이 필요합니다</string>
+       <key>NSMicrophoneUsageDescription</key>
+       <string>음성 메시지를 위해 마이크 권한이 필요합니다</string>
+       <key>NSPhotoLibraryUsageDescription</key>
+       <string>사진 선택을 위해 갤러리 접근 권한이 필요합니다</string>
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -60,5 +74,6 @@
           </dict>
         <key>io.flutter.embedded_views_preview</key>
         <true/>
+
 </dict>
 </plist>
