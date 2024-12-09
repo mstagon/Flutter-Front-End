@@ -24,7 +24,7 @@ class _MenstruationDetailScreen2State extends State<MenstruationDetailScreen3> {
           _currentValue = value;
         },
         onTap: (){
-          // 완료 버튼임.
+
         },
       ),
     );

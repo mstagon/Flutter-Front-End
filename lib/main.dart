@@ -13,23 +13,37 @@ void main() {
 
   // 실제 서버 사용시
   // AppConfig.environment = Environment.production;
-  
+
   // 목 서버 사용시
   AppConfig.environment = Environment.mock;
-  
+
   runApp(ProviderScope(child: MyApp()));
 }
 
+// class MyApp extends ConsumerWidget {
+//
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context,ref) {
+//     final router = ref.watch(routerProvider);
+//     return MaterialApp.router(
+//       debugShowCheckedModeBanner: false,
+//       routerConfig: router,
+//       );
+//   }
+// }
 class MyApp extends ConsumerWidget {
 
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
-    final router = ref.watch(routerProvider);
-    return MaterialApp.router(
+
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      );
+      home: RootTab(),
+    );
+
   }
 }

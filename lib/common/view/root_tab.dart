@@ -58,13 +58,15 @@ class RootTab extends StatelessWidget {
             pushScreen(context, screen: MapScreen(),withNavBar: false);
           },
         ),
-        PersistentTabConfig(
-          screen: SocialScreen(),
+        PersistentTabConfig.noScreen(
           item: ItemConfig(
             activeForegroundColor: Colors.black,
             icon: Icon(Icons.social_distance),
             title: "소셜",
           ),
+          onPressed: (BuildContext context){
+            pushScreen(context, screen: SocialScreen(),withNavBar: false);
+          },
         ),
       ],
       navBarBuilder: (navBarConfig) => Style14BottomNavBar(
